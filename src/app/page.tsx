@@ -6,27 +6,62 @@ import CondolenceList from "../components/CondolenceList";
 
 export default function Home() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-
   const handleFormSubmit = () => setRefreshTrigger((prev) => prev + 1);
 
   return (
-    <main className="min-h-screen bg-gray-50 py-10 px-4">
-      <section className="text-center mb-10">
-        <Image
-          src="/Grandma-Olaniyan.jpg"
-          alt="In Loving Memory"
-          width={300}
-          height={300}
-          className="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
-        />
-        <h1 className="text-3xl font-bold">In Loving Memory of Mum 🕊️</h1>
-        <p className="text-gray-600 mt-2 max-w-md mx-auto">
-          Forever in our hearts. Please share your condolences and testimonies
-          below.
+    <main className="min-h-screen bg-gray-50 pb-16">
+      {/* Hero Section with Collage */}
+      <section className="relative w-full h-64 md:h-80 lg:h-96 overflow-hidden">
+        <div className="absolute inset-0 flex">
+          {/* Replace these with real collage images */}
+          <Image
+            src="/Grandma-Olaniyan.jpg"
+            alt="Priscilla Ofunneamaka Adubu-Olaniyan"
+            width={800}
+            height={600}
+            className="w-1/3 object-cover"
+          />
+          <Image
+            src="/Grandma-Olaniyan.jpg"
+            alt="Priscilla Ofunneamaka Adubu-Olaniyan"
+            width={800}
+            height={600}
+            className="w-1/3 object-cover"
+          />
+          <Image
+            src="/Grandma-Olaniyan.jpg"
+            alt="Priscilla Ofunneamaka Adubu-Olaniyan"
+            width={800}
+            height={600}
+            className="w-1/3 object-cover"
+          />
+        </div>
+        <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-center text-white px-4">
+          <h1 className="text-3xl md:text-4xl font-bold">
+            In Loving Memory of
+          </h1>
+          <h2 className="text-2xl md:text-3xl font-semibold mt-2">
+            Priscilla Ofunneamaka Adubu-Olaniyan
+          </h2>
+          <p className="text-sm md:text-base mt-3">
+            13th March 1951 – 29th October 2025 • Aged 74
+          </p>
+          <p className="text-sm md:text-base italic mt-2">
+            “The Burial Date will be communicated.”
+          </p>
+        </div>
+      </section>
+
+      {/* Introduction */}
+      <section className="text-center my-10 px-4">
+        <p className="text-gray-600 max-w-2xl mx-auto text-lg">
+          Forever in our hearts, a loving wife, mother, grandmother, and friend.
+          Please share your condolences, memories, and testimonies below.
         </p>
       </section>
 
-      <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+      {/* Form and Condolence List Side by Side */}
+      <div className="grid md:grid-cols-2 gap-10 max-w-6xl mx-auto px-4">
         {/* Left: Form */}
         <CondolenceForm onSubmitSuccess={handleFormSubmit} />
 
