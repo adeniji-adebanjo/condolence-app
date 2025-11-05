@@ -56,7 +56,7 @@ export default function Hero() {
           onClick={scrollToForm}
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
-          className="mt-4 inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/30 text-white py-2 px-4 rounded-lg"
+          className="mt-4 inline-flex items-center cursor-pointer gap-2 bg-white/10 hover:bg-white/20 border border-white/30 text-white py-2 px-4 rounded-lg"
           aria-label="Jump to condolence form"
         >
           Share a Condolence
