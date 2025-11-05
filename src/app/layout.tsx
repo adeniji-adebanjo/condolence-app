@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import { AnimatePresence } from "framer-motion";
@@ -24,14 +25,25 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
       <body
         className={`${cormorantGaramond.variable} ${inter.variable} font-sans antialiased bg-background text-foreground`}
       >
+        {/* Google Analytics (gtag.js) - measurement ID: G-S06N2MCEGK */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-S06N2MCEGK"
+          strategy="afterInteractive"
+        />
+        <Script
+          id="gtag-init"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-S06N2MCEGK');`,
+          }}
+        />
+
         <AnimatePresence mode="wait">{children}</AnimatePresence>
       </body>
     </html>

@@ -35,11 +35,7 @@ export default function CondolenceList({
         const data = await res.json();
 
         // Expecting an array of rows (each representing a condolence)
-        setCondolences(
-          Array.isArray(data)
-            ? data.reverse() // latest first
-            : []
-        );
+        setCondolences(Array.isArray(data) ? data.reverse() : []);
         setError(null);
       } catch (err) {
         console.error("Error fetching condolences:", err);
