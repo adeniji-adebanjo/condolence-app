@@ -14,7 +14,7 @@ export default function Hero() {
       variants={fadeIn}
       initial="hidden"
       animate="visible"
-      className="relative w-full h-64 md:h-80 lg:h-96 overflow-hidden"
+      className="relative w-full h-75 md:h-80 lg:h-96 overflow-hidden"
     >
       <div className="absolute inset-0 flex">
         {/* Replace these with real collage images */}
@@ -40,6 +40,13 @@ export default function Hero() {
           className="w-1/3 object-cover"
         />
       </div>
+
+      {/* add overlay here */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/40 pointer-events-none"
+      />
+
       <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-center text-white px-4">
         <h1 className="text-3xl md:text-4xl font-bold">In Loving Memory of</h1>
         <h2 className="text-2xl md:text-3xl font-semibold mt-2">

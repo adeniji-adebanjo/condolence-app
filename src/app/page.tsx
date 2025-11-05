@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Hero from "../components/Hero";
-import Timeline from "../components/Timeline";
+// import Timeline from "../components/Timeline";
 import CondolenceForm from "../components/CondolenceForm";
 import CondolenceList from "../components/CondolenceList";
 
@@ -30,10 +30,10 @@ export default function Home() {
 
       {/* Timeline (left) and Form (right) */}
       <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-8 items-start">
-        <div>
+        {/* <div>
           <h3 className="text-lg font-semibold mb-4">Key Life Events</h3>
           <Timeline events={events} />
-        </div>
+        </div> */}
 
         <div>
           <CondolenceForm onSubmitSuccess={handleFormSubmit} />
