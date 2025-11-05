@@ -1,7 +1,9 @@
 "use client";
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { slideInFromRight } from "../lib/animations";
 
 interface CondolenceFormProps {
   onSubmitSuccess: () => void;
@@ -83,8 +85,13 @@ export default function CondolenceForm({
   };
 
   return (
-    <form
+    <motion.form
+      id="condolence-form"
       onSubmit={handleSubmit}
+      variants={slideInFromRight}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
       className="bg-white p-6 rounded-2xl shadow-md w-full space-y-4"
     >
       <h2 className="text-xl font-semibold text-gray-800 text-center">
@@ -100,12 +107,13 @@ export default function CondolenceForm({
         required
       />
 
-      <textarea
+      <motion.textarea
         placeholder="Write your condolence or testimony..."
         value={form.message}
         onChange={(e) => setForm({ ...form, message: e.target.value })}
-        className="w-full border p-2 rounded"
+        className="w-full border p-2 rounded h-40 resize-y"
         required
+        whileFocus={{ scale: 1.01 }}
       />
 
       <div>
@@ -187,14 +195,15 @@ export default function CondolenceForm({
         </div>
       )}
 
-      <button
+      <motion.button
         type="submit"
         disabled={loading}
-        className="bg-blue-600 text-white py-2 px-4 rounded w-full cursor-pointer hover:bg-blue-700 transition"
+        whileTap={{ scale: 0.98 }}
+        className="bg-blue-600 text-white py-2 px-4 rounded w-full cursor-pointer hover:bg-blue-700 transition disabled:opacity-60"
       >
         {loading ? "Submitting..." : "Submit"}
-      </button>
+      </motion.button>
       <ToastContainer position="top-right" autoClose={4000} />
-    </form>
+    </motion.form>
   );
 }

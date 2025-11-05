@@ -20,13 +20,16 @@ export default function CondolenceCard({
   return (
     <div className="bg-white shadow rounded-xl p-4 text-center flex flex-col items-center">
       {imageUrl && (
-        <Image
-          src={imageUrl}
-          alt={name}
-          width={96}
-          height={96}
-          className="w-24 h-24 mx-auto rounded-full object-cover"
-        />
+        <div className="w-24 h-24 mx-auto relative">
+          <Image
+            src={imageUrl}
+            alt={name}
+            fill
+            sizes="96px"
+            className="rounded-full object-cover"
+            unoptimized={imageUrl.startsWith("data:")}
+          />
+        </div>
       )}
       <h2 className="font-semibold mt-3 text-gray-800">{name}</h2>
       {relationship && (

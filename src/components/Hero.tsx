@@ -1,9 +1,21 @@
 "use client";
 import Image from "next/image";
+import { motion } from "framer-motion";
+import { fadeIn } from "../lib/animations";
 
 export default function Hero() {
+  const scrollToForm = () => {
+    const el = document.getElementById("condolence-form");
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+
   return (
-    <section className="relative w-full h-64 md:h-80 lg:h-96 overflow-hidden">
+    <motion.section
+      variants={fadeIn}
+      initial="hidden"
+      animate="visible"
+      className="relative w-full h-64 md:h-80 lg:h-96 overflow-hidden"
+    >
       <div className="absolute inset-0 flex">
         {/* Replace these with real collage images */}
         <Image
@@ -39,7 +51,17 @@ export default function Hero() {
         <p className="text-sm md:text-base italic mt-2">
           “The Burial Date will be communicated.”
         </p>
+
+        <motion.button
+          onClick={scrollToForm}
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
+          className="mt-4 inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/30 text-white py-2 px-4 rounded-lg"
+          aria-label="Jump to condolence form"
+        >
+          Share a Condolence
+        </motion.button>
       </div>
-    </section>
+    </motion.section>
   );
 }

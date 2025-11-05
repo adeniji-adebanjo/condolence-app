@@ -1,26 +1,84 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
+    --background: #ffffff;
+    --foreground: #171717;
+  }
+
+  .dark {
     --background: #ededed;
     --foreground: #0a0a0a;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-inter), system-ui, sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-cormorant), serif;
+    @apply font-medium tracking-tight;
+  }
+}
+
+/* Animation Utilities */
+.fade-in {
+  @apply animate-in fade-in duration-500;
+}
+
+.slide-in-from-right {
+  @apply animate-in slide-in-from-right duration-300;
+}
+
+.slide-in-from-left {
+  @apply animate-in slide-in-from-left duration-300;
+}
+
+.zoom-in {
+  @apply animate-in zoom-in duration-300;
+}
+
+/* Smooth Transitions */
+* {
+  @apply transition-colors duration-200;
+}
+
+/* Typography Scale */
+h1 {
+  @apply text-4xl md:text-5xl lg:text-6xl font-semibold;
+}
+h2 {
+  @apply text-3xl md:text-4xl lg:text-5xl font-semibold;
+}
+h3 {
+  @apply text-2xl md:text-3xl lg:text-4xl font-medium;
+}
+h4 {
+  @apply text-xl md:text-2xl lg:text-3xl font-medium;
+}
+h5 {
+  @apply text-lg md:text-xl font-medium;
+}
+h6 {
+  @apply text-base md:text-lg font-medium;
+}
+
+p,
+input,
+textarea {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  @apply text-base leading-relaxed;
 }

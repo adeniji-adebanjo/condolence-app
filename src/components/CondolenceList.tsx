@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import CondolenceCard from "./CondolenceCard";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 interface Condolence {
   name: string;
@@ -102,10 +103,11 @@ export default function CondolenceList({
         <div className="flex items-center justify-center gap-3 mt-6">
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
-            className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
+            className="p-2 rounded bg-gray-200 hover:bg-gray-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             disabled={page === 1}
+            aria-label="Previous page"
           >
-            Previous
+            <FaArrowLeft className="w-4 h-4" />
           </button>
 
           <div className="space-x-2">
@@ -113,7 +115,7 @@ export default function CondolenceList({
               <button
                 key={i}
                 onClick={() => setPage(i + 1)}
-                className={`px-3 py-1 rounded ${
+                className={`px-3 py-1 rounded cursor-pointer ${
                   page === i + 1 ? "bg-blue-600 text-white" : "bg-gray-100"
                 }`}
               >
@@ -124,10 +126,11 @@ export default function CondolenceList({
 
           <button
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
+            className="p-2 rounded bg-gray-200 hover:bg-gray-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             disabled={page === totalPages}
+            aria-label="Next page"
           >
-            Next
+            <FaArrowRight className="w-4 h-4" />
           </button>
         </div>
       )}

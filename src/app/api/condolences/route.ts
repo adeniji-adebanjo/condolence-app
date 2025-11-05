@@ -47,14 +47,27 @@ export async function POST(req: NextRequest) {
     let imageUrl = "";
     if (body.image) {
       try {
+        console.log("Uploading image to Cloudinary...");
         const uploaded = await cloudinary.uploader.upload(body.image, {
           folder: "condolence_images",
+          transformation: [
+            { width: 400, height: 400, crop: "fill" },
+            { quality: "auto" },
+            { fetch_format: "auto" },
+          ],
         });
+        console.log("Image uploaded successfully:", uploaded.secure_url);
         imageUrl = uploaded.secure_url;
       } catch (error) {
         console.error("Cloudinary upload error:", error);
+        if (error instanceof Error) {
+          console.error("Error details:", error.message);
+        }
         return NextResponse.json(
-          { error: "Failed to upload image" },
+          {
+            error: "Failed to upload image",
+            details: error instanceof Error ? error.message : "Unknown error",
+          },
           { status: 500 }
         );
       }
