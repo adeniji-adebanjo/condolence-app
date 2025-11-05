@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface CondolenceFormProps {
   onSubmitSuccess: () => void;
@@ -18,6 +20,7 @@ export default function CondolenceForm({
   });
   const [loading, setLoading] = useState(false);
 
+  // Handle image upload (convert to Base64 first)
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -27,15 +30,34 @@ export default function CondolenceForm({
     reader.readAsDataURL(file);
   };
 
+  // Submit form to API
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/condolences`, {
+      const res = await fetch("/api/condolences", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
+
+      if (!res.ok) {
+        // Try to parse server error message
+        let errMsg = "Failed to submit condolence";
+        try {
+          const body = await res.json();
+          errMsg = body?.message || body?.error || errMsg;
+        } catch {
+          try {
+            errMsg = await res.text();
+          } catch {
+            /* ignore */
+          }
+        }
+        throw new Error(errMsg);
+      }
+
       setForm({
         name: "",
         message: "",
@@ -44,9 +66,17 @@ export default function CondolenceForm({
         relationship: "",
         otherRelationship: "",
       });
+
+      // show success toast and trigger parent callback
+      toast.success("Condolence submitted — thank you!");
       onSubmitSuccess();
     } catch (error) {
-      console.error("Failed to submit condolence:", error);
+      console.error("Submission error:", error);
+      const msg =
+        error instanceof Error
+          ? error.message
+          : "There was an issue submitting your condolence. Please try again.";
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -77,15 +107,18 @@ export default function CondolenceForm({
         className="w-full border p-2 rounded"
         required
       />
-      <label htmlFor="file">
-        Upload an image of you with Grandma (optional)
-      </label>
-      <input
-        type="file"
-        accept="image/*"
-        onChange={handleImage}
-        className="border border-solid border-black p-2 rounded w-full"
-      />
+
+      <div>
+        <label htmlFor="file" className="block text-sm text-gray-700 mb-1">
+          Upload an image (optional)
+        </label>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImage}
+          className="border border-gray-300 p-2 rounded w-full"
+        />
+      </div>
 
       <div className="space-y-2">
         <label htmlFor="location" className="block text-sm text-gray-700">
@@ -109,14 +142,14 @@ export default function CondolenceForm({
         <select
           id="relationship"
           value={form.relationship}
-          onChange={(e) => {
+          onChange={(e) =>
             setForm({
               ...form,
               relationship: e.target.value,
               otherRelationship:
                 e.target.value !== "other" ? "" : form.otherRelationship,
-            });
-          }}
+            })
+          }
           className="w-full border p-2 rounded"
           required
         >
@@ -161,6 +194,7 @@ export default function CondolenceForm({
       >
         {loading ? "Submitting..." : "Submit"}
       </button>
+      <ToastContainer position="top-right" autoClose={4000} />
     </form>
   );
 }
