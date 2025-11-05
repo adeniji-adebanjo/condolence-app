@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Hero from "../components/Hero";
+import Slideshow from "../components/Slideshow";
 // import Timeline from "../components/Timeline";
 import CondolenceForm from "../components/CondolenceForm";
 import CondolenceList from "../components/CondolenceList";
@@ -28,16 +29,16 @@ export default function Home() {
         </p>
       </section>
 
-      {/* Timeline (left) and Form (right) */}
+      {/* Form (left) and Slideshow (right on desktop only) */}
       <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-8 items-start">
-        {/* <div>
-          <h3 className="text-lg font-semibold mb-4">Key Life Events</h3>
-          <Timeline events={events} />
-        </div> */}
-
         <div>
           <CondolenceForm onSubmitSuccess={handleFormSubmit} />
         </div>
+
+        {/* <div className="flex justify-center items-start"> */}
+        {/* Slideshow is hidden on small screens via the component's internal classes */}
+        <Slideshow />
+        {/* </div> */}
       </div>
 
       {/* Condolence list full width below */}

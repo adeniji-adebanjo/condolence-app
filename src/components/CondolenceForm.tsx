@@ -98,25 +98,49 @@ export default function CondolenceForm({
         Share Your Condolence
       </h2>
 
-      <input
-        type="text"
-        placeholder="Your Name"
-        value={form.name}
-        onChange={(e) => setForm({ ...form, name: e.target.value })}
-        className="w-full border p-2 rounded"
-        required
-        aria-required="true"
-      />
+      <div>
+        <label
+          htmlFor="name"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Full name
+        </label>
+        <input
+          id="name"
+          type="text"
+          placeholder="First Name & Last Name (e.g., John Doe)"
+          value={form.name}
+          onChange={(e) => setForm({ ...form, name: e.target.value })}
+          className="w-full border p-2 rounded"
+          required
+          aria-required="true"
+        />
+        <p className="text-xs text-gray-500 mt-1">
+          Please enter your full name as you want it displayed
+        </p>
+      </div>
 
-      <motion.textarea
-        placeholder="Write your condolence or testimony..."
-        value={form.message}
-        onChange={(e) => setForm({ ...form, message: e.target.value })}
-        className="w-full border p-2 rounded h-40 resize-y"
-        required
-        aria-required="true"
-        whileFocus={{ scale: 1.01 }}
-      />
+      <div>
+        <label
+          htmlFor="message"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Message
+        </label>
+        <motion.textarea
+          id="message"
+          placeholder="Write your condolence or testimony..."
+          value={form.message}
+          onChange={(e) => setForm({ ...form, message: e.target.value })}
+          className="w-full border p-2 rounded h-40 resize-y"
+          required
+          aria-required="true"
+          whileFocus={{ scale: 1.01 }}
+        />
+        <p className="text-xs text-gray-500 mt-1">
+          Share a memory, comforting words, or testimony about Grandma.
+        </p>
+      </div>
 
       <div>
         <label htmlFor="file" className="block text-sm text-gray-700 mb-1">
