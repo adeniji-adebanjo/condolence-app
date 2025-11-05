@@ -10,7 +10,7 @@ cloudinary.config({
 
 export async function GET() {
   try {
-    const scriptUrl = process.env.GOOGLE_SCRIPT_URL;
+    const scriptUrl = process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL;
     if (!scriptUrl) {
       console.error("GOOGLE_SCRIPT_URL environment variable is not set");
       return NextResponse.json(
@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
-    const scriptUrl = process.env.GOOGLE_SCRIPT_URL;
+    const scriptUrl = process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL;
     if (!scriptUrl) {
       console.error("GOOGLE_SCRIPT_URL environment variable is not set (POST)");
       return NextResponse.json(
@@ -136,12 +136,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const response = await googleRes
-      .json()
-      .catch(() => ({
-        status: "error",
-        message: "Invalid JSON from Google Script",
-      }));
+    const response = await googleRes.json().catch(() => ({
+      status: "error",
+      message: "Invalid JSON from Google Script",
+    }));
 
     // Check if Apps Script returned an error
     if (response.status === "error") {
