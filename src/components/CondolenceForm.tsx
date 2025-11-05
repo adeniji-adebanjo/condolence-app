@@ -105,6 +105,7 @@ export default function CondolenceForm({
         onChange={(e) => setForm({ ...form, name: e.target.value })}
         className="w-full border p-2 rounded"
         required
+        aria-required="true"
       />
 
       <motion.textarea
@@ -113,6 +114,7 @@ export default function CondolenceForm({
         onChange={(e) => setForm({ ...form, message: e.target.value })}
         className="w-full border p-2 rounded h-40 resize-y"
         required
+        aria-required="true"
         whileFocus={{ scale: 1.01 }}
       />
 
@@ -140,6 +142,7 @@ export default function CondolenceForm({
           onChange={(e) => setForm({ ...form, location: e.target.value })}
           className="w-full border p-2 rounded"
           required
+          aria-required="true"
         />
       </div>
 
@@ -160,6 +163,7 @@ export default function CondolenceForm({
           }
           className="w-full border p-2 rounded"
           required
+          aria-required="true"
         >
           <option value="" disabled>
             Select relationship...
@@ -191,6 +195,7 @@ export default function CondolenceForm({
             }
             className="w-full border p-2 rounded"
             required
+            aria-required="true"
           />
         </div>
       )}
