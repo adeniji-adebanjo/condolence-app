@@ -117,3 +117,73 @@ export async function addCondolence(data: CondolenceData): Promise<void> {
     throw error;
   }
 }
+
+// --- Image gallery helpers ---
+interface ImageRow {
+  url: string;
+  uploadedAt?: string;
+}
+
+const IMAGE_SHEET_TITLE = "image_gallery";
+
+export async function getImages(): Promise<ImageRow[]> {
+  try {
+    if (!SPREADSHEET_ID)
+      throw new Error("GOOGLE_SPREADSHEET_ID is not configured");
+    if (!process.env.GOOGLE_CLIENT_EMAIL)
+      throw new Error("GOOGLE_CLIENT_EMAIL is not configured");
+    if (!process.env.GOOGLE_PRIVATE_KEY)
+      throw new Error("GOOGLE_PRIVATE_KEY is not configured");
+
+    await doc.loadInfo();
+    const sheet = doc.sheetsByTitle[IMAGE_SHEET_TITLE];
+    if (!sheet) {
+      console.warn(
+        `Sheet titled '${IMAGE_SHEET_TITLE}' not found. Returning empty array.`
+      );
+      return [];
+    }
+
+    const rows = await sheet.getRows();
+    return rows.map((r) => {
+      const url = (r.get("url") as string) || "";
+      const uploadedAt = (r.get("uploadedAt") as string) || "";
+      return { url, uploadedAt };
+    });
+  } catch (error) {
+    console.error("Error fetching images from Google Sheets:", error);
+    throw error;
+  }
+}
+
+export async function addImage(data: ImageRow): Promise<void> {
+  try {
+    await doc.loadInfo();
+    let sheet = doc.sheetsByTitle[IMAGE_SHEET_TITLE];
+    if (!sheet) {
+      // create the sheet with reasonable headers
+      sheet = await doc.addSheet({
+        title: IMAGE_SHEET_TITLE,
+        headerValues: ["url", "uploadedAt"],
+      });
+      console.log(`Created sheet '${IMAGE_SHEET_TITLE}' with headers`);
+    }
+
+    // Ensure headers exist
+    const rows = await sheet.getRows();
+    if (rows.length === 0) {
+      await sheet.setHeaderRow(["url", "uploadedAt"]);
+    }
+
+    const rowData = {
+      url: data.url,
+      uploadedAt: data.uploadedAt || new Date().toISOString(),
+    };
+
+    await sheet.addRow(rowData);
+    console.log("Image row added to Google Sheet");
+  } catch (error) {
+    console.error("Error adding image to Google Sheets:", error);
+    throw error;
+  }
+}

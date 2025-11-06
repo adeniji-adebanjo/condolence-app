@@ -38,19 +38,19 @@ const DragDropGallery = () => {
 
     const data = await res.json();
     if (data.success && data.image?.url) {
-      setImages((prev) => [data.image, ...prev]); // prepend the new image
+      setImages((prev) => [data.image, ...prev]);
     }
   }, []);
 
-  // Drag & Drop Handlers (Disabled for now)
-  // const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
-  //   e.preventDefault();
-  //   setIsDragging(false);
-  //   const files = Array.from(e.dataTransfer.files).filter((f) =>
-  //     f.type.startsWith("image/")
-  //   );
-  //   files.forEach(uploadFile);
-  // };
+  // Drag & Drop Handlers
+  const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const files = Array.from(e.dataTransfer.files).filter((f) =>
+      f.type.startsWith("image/")
+    );
+    files.forEach(uploadFile);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -66,23 +66,20 @@ const DragDropGallery = () => {
 
   return (
     <section className="py-20 bg-gray-50">
-      <motion.h2
+      <motion.h4
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
-        className="text-4xl md:text-5xl font-bold text-center mb-2 text-gray-900"
+        className="text-2xl md:text-3xl font-bold text-center mb-2 text-gray-900"
       >
-        Upload Your Moments
-      </motion.h2>
-      <p className="text-lg text-center text-gray-700 mb-8">
-        Upload and share your moments with other brethren; let&apos;s create
-        memories together!
+        Upload Your Fun Moments/Images With Grandma
+      </motion.h4>
+      <p className="text-md text-center text-gray-700 mb-8">
+        Upload and share your moments with all of us; let&apos;s celebrate
+        Grandma together!
       </p>
-      <p className="text-md text-center text-red-700 mb-8 flex items-center justify-center gap-2">
-        <FaExclamationTriangle className="text-red-700" />
-        Feature is disabled till the day for the hangout...
-      </p>
+
       {/* Drag & Drop */}
       <div
         onDragOver={(e) => {
@@ -90,7 +87,7 @@ const DragDropGallery = () => {
           setIsDragging(true);
         }}
         onDragLeave={() => setIsDragging(false)}
-        // onDrop={handleDrop} // Disabled for now
+        onDrop={handleDrop}
         className={`flex justify-center items-center border-4 border-dashed rounded-lg h-40 mb-8 mx-6 transition-colors ${
           isDragging
             ? "border-yellow-400 bg-yellow-50"

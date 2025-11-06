@@ -5,6 +5,7 @@ import Slideshow from "@/components/Slideshow";
 // import Timeline from "@/components/Timeline";
 import CondolenceForm from "@/components/CondolenceForm";
 import CondolenceList from "@/components/CondolenceList";
+import ImageGallery from "@/components/ImageGallery";
 
 export default function Home() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -47,6 +48,12 @@ export default function Home() {
           Messages & Testimonies
         </h2>
         <CondolenceList refreshTrigger={refreshTrigger} />
+      </section>
+
+      {/* Gallery section */}
+      <section className="max-w-6xl mx-auto px-4 mt-12">
+        {/* Gallery component would go here */}
+        <ImageGallery />
       </section>
     </main>
   );
