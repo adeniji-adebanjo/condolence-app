@@ -1,4 +1,4 @@
-import clientPromise from "../../../lib/mongodb";
+import clientPromise from "@/lib/mongodb";
 import { NextRequest, NextResponse } from "next/server";
 import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
 
@@ -86,7 +86,7 @@ export async function GET() {
 
     const images = await collection.find({}).sort({ uploadedAt: -1 }).toArray();
 
-    const imagesWithId = images.map((img) => ({
+    const imagesWithId = images.map((img: any) => ({
       ...img,
       _id: img._id?.toString(),
     }));

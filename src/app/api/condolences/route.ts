@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
-import { getCondolences, addCondolence } from "../../../lib/googleSheets";
+import { getCondolences, addCondolence } from "@/lib/googleSheets";
 
 // Configure Cloudinary with environment variables
 cloudinary.config({

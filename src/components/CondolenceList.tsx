@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import CondolenceCard from "./CondolenceCard";
+import CondolenceCard from "@/components/CondolenceCard";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 interface Condolence {

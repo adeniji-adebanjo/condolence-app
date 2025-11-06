@@ -1,10 +1,10 @@
 "use client";
 import { useState } from "react";
-import Hero from "../components/Hero";
-import Slideshow from "../components/Slideshow";
-// import Timeline from "../components/Timeline";
-import CondolenceForm from "../components/CondolenceForm";
-import CondolenceList from "../components/CondolenceList";
+import Hero from "@/components/Hero";
+import Slideshow from "@/components/Slideshow";
+// import Timeline from "@/components/Timeline";
+import CondolenceForm from "@/components/CondolenceForm";
+import CondolenceList from "@/components/CondolenceList";
 
 export default function Home() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
