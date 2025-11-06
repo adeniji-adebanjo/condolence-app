@@ -197,6 +197,7 @@ export default function CondolenceForm({
           <option value="sibling">Sibling</option>
           <option value="friend">Friend</option>
           <option value="colleague">Colleague</option>
+          <option value="neighbour">Neighbour</option>
           <option value="other">Other</option>
         </select>
       </div>
