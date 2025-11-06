@@ -51,7 +51,7 @@ export default function Home() {
       </section>
 
       {/* Gallery section */}
-      <section className="max-w-6xl mx-auto px-4 mt-12">
+      <section id="image-gallery" className="max-w-6xl mx-auto px-4 mt-12">
         {/* Gallery component would go here */}
         <ImageGallery />
       </section>

@@ -73,7 +73,7 @@ const DragDropGallery = () => {
         transition={{ duration: 0.6 }}
         className="text-2xl md:text-3xl font-bold text-center mb-2 text-gray-900"
       >
-        Upload Your Fun Moments/Images With Grandma
+        Upload Your Fun Moments or Image(s) With Grandma
       </motion.h4>
       <p className="text-md text-center text-gray-700 mb-8">
         Upload and share your moments with all of us; let&apos;s celebrate

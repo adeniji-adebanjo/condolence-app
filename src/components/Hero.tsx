@@ -59,15 +59,31 @@ export default function Hero() {
           “The Burial Date will be communicated.”
         </p>
 
-        <motion.button
-          onClick={scrollToForm}
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.97 }}
-          className="mt-4 inline-flex items-center cursor-pointer gap-2 bg-white/10 hover:bg-white/20 border border-white/30 text-white py-2 px-4 rounded-lg"
-          aria-label="Jump to condolence form"
-        >
-          Share a Condolence
-        </motion.button>
+        <div className="mt-4 flex gap-3 justify-center">
+          <motion.button
+            onClick={scrollToForm}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            className="inline-flex items-center justify-center cursor-pointer gap-2 bg-white/10 hover:bg-white/20 border border-white/30 text-white py-2 px-4 rounded-lg"
+            aria-label="Jump to condolence form"
+          >
+            Share a Condolence
+          </motion.button>
+
+          <motion.button
+            onClick={() => {
+              const el = document.getElementById("image-gallery");
+              if (el)
+                el.scrollIntoView({ behavior: "smooth", block: "center" });
+            }}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            className="inline-flex items-center justify-center cursor-pointer gap-2 bg-white/10 hover:bg-white/20 border border-white/30 text-white py-2 px-4 rounded-lg"
+            aria-label="View image gallery"
+          >
+            View Photo Gallery
+          </motion.button>
+        </div>
       </div>
     </motion.section>
   );
