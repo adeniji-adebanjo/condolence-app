@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { mutate } from "swr";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { slideInFromRight } from "@/lib/animations";
@@ -60,6 +61,10 @@ export default function CondolenceForm({
         throw new Error(errMsg);
       }
 
+      // ✅ Immediately refresh cached condolences list (SWR)
+      mutate("/api/condolences");
+
+      // Reset form
       setForm({
         name: "",
         message: "",
@@ -69,9 +74,7 @@ export default function CondolenceForm({
         otherRelationship: "",
       });
 
-      // show success toast and trigger parent callback
       toast.success("Condolence submitted — thank you!");
-      onSubmitSuccess();
     } catch (error) {
       console.error("Submission error:", error);
       const msg =
