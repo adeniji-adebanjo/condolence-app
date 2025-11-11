@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
+import useSWR from "swr";
+import { useState } from "react";
 import CondolenceCard from "@/components/CondolenceCard";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
@@ -12,45 +13,35 @@ interface Condolence {
   timestamp?: string;
 }
 
+// Simple fetcher function for SWR
+const fetcher = async (url: string) => {
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`HTTP error! status: ${res.status}`);
+  }
+  return res.json();
+};
+
 export default function CondolenceList({
   refreshTrigger,
 }: {
   refreshTrigger: number;
 }) {
-  const [condolences, setCondolences] = useState<Condolence[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const perPage = 9;
 
-  useEffect(() => {
-    const fetchCondolences = async () => {
-      try {
-        const res = await fetch("/api/condolences");
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
+  // Use SWR for realtime revalidation
+  const { data, error, isLoading } = useSWR("/api/condolences", fetcher, {
+    refreshInterval: 5000, // ⏱ auto-refresh every 5s
+    revalidateOnFocus: true, // refresh when user switches back to tab
+    revalidateOnReconnect: true, // refresh after reconnect
+  });
 
-        const data = await res.json();
+  const condolences: Condolence[] = Array.isArray(data)
+    ? [...data].reverse()
+    : [];
 
-        // Expecting an array of rows (each representing a condolence)
-        setCondolences(Array.isArray(data) ? data.reverse() : []);
-        setError(null);
-      } catch (err) {
-        console.error("Error fetching condolences:", err);
-        setError(
-          err instanceof Error ? err.message : "Failed to fetch condolences"
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCondolences();
-  }, [refreshTrigger]);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <p className="text-center text-gray-500 mt-4">Loading messages...</p>
     );
@@ -60,7 +51,7 @@ export default function CondolenceList({
     return (
       <div className="text-center text-red-600 mt-4 p-4 bg-red-50 rounded-lg">
         <p>Unable to load messages</p>
-        <p className="text-sm mt-2 text-red-500">{error}</p>
+        <p className="text-sm mt-2 text-red-500">{error.message}</p>
       </div>
     );
   }
@@ -73,7 +64,7 @@ export default function CondolenceList({
     );
   }
 
-  // Pagination calculations
+  // Pagination
   const total = condolences.length;
   const totalPages = Math.max(1, Math.ceil(total / perPage));
   const startIdx = (page - 1) * perPage;
