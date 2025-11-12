@@ -32,9 +32,9 @@ export default function CondolenceList({
 
   // Use SWR for realtime revalidation
   const { data, error, isLoading } = useSWR("/api/condolences", fetcher, {
-    refreshInterval: 5000, // ⏱ auto-refresh every 5s
-    revalidateOnFocus: true, // refresh when user switches back to tab
-    revalidateOnReconnect: true, // refresh after reconnect
+    refreshInterval: 60000,
+    revalidateOnFocus: true,
+    revalidateOnReconnect: true,
   });
 
   const condolences: Condolence[] = Array.isArray(data)

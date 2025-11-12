@@ -1,6 +1,6 @@
 "use client";
 
-import useSWR, { mutate } from "swr";
+import useSWR from "swr"; // ❌ remove global mutate import
 import { useCallback, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
@@ -19,32 +19,37 @@ const DragDropGallery = () => {
   const [page, setPage] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
 
-  // ✅ Use SWR to fetch and revalidate images
-  const { data, error, isLoading } = useSWR("/api/images", fetcher, {
-    refreshInterval: 10000, // optional auto refresh every 10s
+  // ✅ useSWR returns a local mutate you can call anytime
+  const { data, error, isLoading, mutate } = useSWR("/api/images", fetcher, {
+    refreshInterval: 60000,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
   });
 
   const images = data?.images ?? [];
 
-  // ✅ Upload image handler
-  const uploadFile = useCallback(async (file: File) => {
-    const formData = new FormData();
-    formData.append("file", file);
+  // ✅ Upload handler
+  const uploadFile = useCallback(
+    async (file: File) => {
+      const formData = new FormData();
+      formData.append("file", file);
 
-    const res = await fetch("/api/images", {
-      method: "POST",
-      body: formData,
-    });
+      const res = await fetch("/api/images", {
+        method: "POST",
+        body: formData,
+      });
 
-    const result = await res.json();
+      const result = await res.json();
 
-    if (result.success && result.image?.url) {
-      // Trigger SWR to refetch the latest data
-      mutate("/api/images");
-    }
-  }, []);
+      if (result.success && result.image?.url) {
+        // ✅ Call local mutate() directly (no args = re-fetch fresh data)
+        await mutate();
+      }
+    },
+    [mutate] // include mutate in dependencies
+  );
 
-  // ✅ Drag & Drop Handlers
+  // ✅ Drag & Drop handlers
   const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragging(false);
@@ -62,23 +67,23 @@ const DragDropGallery = () => {
     e.target.value = "";
   };
 
-  if (isLoading) {
+  // Loading and error UI
+  if (isLoading)
     return (
       <section className="py-20 text-center text-gray-600">
         <p>Loading images...</p>
       </section>
     );
-  }
 
-  if (error) {
+  if (error)
     return (
       <section className="py-20 text-center text-red-600">
         <p>Failed to load gallery.</p>
         <p className="text-sm text-red-400">{error.message}</p>
       </section>
     );
-  }
 
+  // Pagination
   const startIndex = page * IMAGES_PER_PAGE;
   const endIndex = startIndex + IMAGES_PER_PAGE;
   const currentImages = images.slice(startIndex, endIndex);
