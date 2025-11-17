@@ -1,48 +1,55 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import useSWR from "swr"; // ❌ remove global mutate import
+import { useCallback, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { FaArrowDown, FaExclamationTriangle } from "react-icons/fa";
+import { FaArrowDown } from "react-icons/fa";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const IMAGES_PER_PAGE = 8;
 
+const fetcher = async (url: string) => {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("Failed to fetch images");
+  return res.json();
+};
+
 const DragDropGallery = () => {
-  const [images, setImages] = useState<{ url: string }[]>([]);
   const [page, setPage] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
 
-  // Fetch images from MongoDB
-  useEffect(() => {
-    const fetchImages = async () => {
-      const res = await fetch("/api/images");
-      const data = await res.json();
-      if (data.success && Array.isArray(data.images)) {
-        setImages(data.images);
-      } else {
-        setImages([]);
+  // ✅ useSWR returns a local mutate you can call anytime
+  const { data, error, isLoading, mutate } = useSWR("/api/images", fetcher, {
+    refreshInterval: 60000,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
+
+  const images = data?.images ?? [];
+
+  // ✅ Upload handler
+  const uploadFile = useCallback(
+    async (file: File) => {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/images", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await res.json();
+
+      if (result.success && result.image?.url) {
+        // ✅ Call local mutate() directly (no args = re-fetch fresh data)
+        await mutate();
       }
-    };
-    fetchImages();
-  }, []);
+    },
+    [mutate] // include mutate in dependencies
+  );
 
-  const uploadFile = useCallback(async (file: File) => {
-    const formData = new FormData();
-    formData.append("file", file);
-
-    const res = await fetch("/api/images", {
-      method: "POST",
-      body: formData,
-    });
-
-    const data = await res.json();
-    if (data.success && data.image?.url) {
-      setImages((prev) => [data.image, ...prev]);
-    }
-  }, []);
-
-  // Drag & Drop Handlers
+  // ✅ Drag & Drop handlers
   const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragging(false);
@@ -60,6 +67,23 @@ const DragDropGallery = () => {
     e.target.value = "";
   };
 
+  // Loading and error UI
+  if (isLoading)
+    return (
+      <section className="py-20 text-center text-gray-600">
+        <p>Loading images...</p>
+      </section>
+    );
+
+  if (error)
+    return (
+      <section className="py-20 text-center text-red-600">
+        <p>Failed to load gallery.</p>
+        <p className="text-sm text-red-400">{error.message}</p>
+      </section>
+    );
+
+  // Pagination
   const startIndex = page * IMAGES_PER_PAGE;
   const endIndex = startIndex + IMAGES_PER_PAGE;
   const currentImages = images.slice(startIndex, endIndex);
@@ -80,7 +104,7 @@ const DragDropGallery = () => {
         Grandma together!
       </p>
 
-      {/* Drag & Drop */}
+      {/* ✅ Drag & Drop Upload */}
       <div
         onDragOver={(e) => {
           e.preventDefault();
@@ -106,10 +130,10 @@ const DragDropGallery = () => {
         </label>
       </div>
 
-      {/* Gallery */}
+      {/* ✅ Gallery Grid */}
       <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
         <AnimatePresence>
-          {currentImages.map((img, i) => (
+          {currentImages.map((img: { url: string }, i: number) => (
             <motion.div
               key={img.url + i}
               initial={{ opacity: 0, scale: 0.9 }}
@@ -118,7 +142,6 @@ const DragDropGallery = () => {
               whileHover={{ scale: 1.05 }}
               className="relative overflow-hidden rounded-2xl shadow-lg border border-gray-200 bg-white group"
             >
-              {/* Image */}
               <Image
                 src={img.url}
                 alt={`uploaded-${i}`}
@@ -129,7 +152,6 @@ const DragDropGallery = () => {
                 unoptimized
               />
 
-              {/* Download Button */}
               <a
                 href={img.url}
                 download
@@ -145,10 +167,9 @@ const DragDropGallery = () => {
         </AnimatePresence>
       </div>
 
-      {/* Pagination */}
+      {/* ✅ Pagination */}
       {images.length > IMAGES_PER_PAGE && (
         <div className="flex justify-center mt-8 items-center gap-2">
-          {/* Prev */}
           <button
             onClick={() => page > 0 && setPage(page - 1)}
             disabled={page === 0}
@@ -162,7 +183,6 @@ const DragDropGallery = () => {
             <ChevronLeft size={20} />
           </button>
 
-          {/* Page Numbers */}
           {Array.from({
             length: Math.ceil(images.length / IMAGES_PER_PAGE),
           }).map((_, index) => (
@@ -179,7 +199,6 @@ const DragDropGallery = () => {
             </button>
           ))}
 
-          {/* Next */}
           <button
             onClick={() =>
               (page + 1) * IMAGES_PER_PAGE < images.length && setPage(page + 1)
