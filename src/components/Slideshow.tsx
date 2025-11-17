@@ -5,10 +5,15 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const images = [
   "/Grandma-Olaniyan.jpg",
-  "/Grandma-Olaniyan.jpg",
-  "/Grandma-Olaniyan.jpg",
-  "/Grandma-Olaniyan.jpg",
-  "/Grandma-Olaniyan.jpg",
+  "/Grandma-Olaniyan2.jpg",
+  "/Grandma-Olaniyan3.jpg",
+  "/Grandma-Olaniyan4.jpg",
+  "/Grandma-Olaniyan5.jpg",
+  "/Grandma-Olaniyan6.jpg",
+  "/Grandma-Olaniyan7.jpg",
+  "/Grandma-Olaniyan8.jpg",
+  "/Grandma-Olaniyan9.jpg",
+  "/Grandma-Olaniyan10.jpg",
 ];
 
 export default function Slideshow({ className = "" }: { className?: string }) {

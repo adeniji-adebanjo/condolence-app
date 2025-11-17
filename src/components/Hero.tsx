@@ -26,14 +26,14 @@ export default function Hero() {
           className="w-1/3 object-cover"
         />
         <Image
-          src="/Grandma-Olaniyan.jpg"
+          src="/Grandma-Olaniyan2.jpg"
           alt="Priscilla Ofunneamaka Adubu-Olaniyan"
           width={800}
           height={600}
           className="w-1/3 object-cover"
         />
         <Image
-          src="/Grandma-Olaniyan.jpg"
+          src="/Grandma-Olaniyan3.jpg"
           alt="Priscilla Ofunneamaka Adubu-Olaniyan"
           width={800}
           height={600}
