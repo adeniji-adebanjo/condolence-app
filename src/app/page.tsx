@@ -1,11 +1,9 @@
-// Server component - avoid client-only imports here so server-only libs (fs, path) can be used
-// Note: client components (forms, galleries) remain marked with "use client"
 import Hero from "@/components/Hero";
 import Slideshow from "@/components/Slideshow";
-// import Timeline from "@/components/Timeline";
 import CondolenceForm from "@/components/CondolenceForm";
 import CondolenceList from "@/components/CondolenceList";
 import ImageGallery from "@/components/ImageGallery";
+// import Timeline from "@/components/Timeline";
 
 export default function Home() {
   // server-rendered page; client subcomponents should call router.refresh() after mutations
@@ -43,7 +41,7 @@ export default function Home() {
 
       {/* Condolence list full width below */}
       <section className="max-w-6xl mx-auto px-4 mt-12">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center md:text-left">
+        <h2 className="font-heading text-3xl font-bold text-gray-800 mb-4 text-center md:text-left">
           Messages & Testimonies
         </h2>
         <CondolenceList />

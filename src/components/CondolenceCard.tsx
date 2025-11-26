@@ -62,7 +62,9 @@ export default function CondolenceCard({
               />
             </div>
           )}
-          <h2 className="font-semibold mt-3 text-gray-800">{name}</h2>
+          <h2 className="font-heading font-bold text-xl mt-3 text-gray-800">
+            {name}
+          </h2>
           {relationship && (
             <p className="text-sm text-gray-500 italic">{relationship}</p>
           )}
@@ -135,7 +137,7 @@ export default function CondolenceCard({
                   />
                 </div>
               )}
-              <h2 className="font-semibold mt-3 text-gray-800 text-xl">
+              <h2 className="font-heading font-bold mt-3 text-gray-800 text-2xl">
                 {name}
               </h2>
               {relationship && (
