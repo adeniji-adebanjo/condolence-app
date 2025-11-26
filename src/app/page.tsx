@@ -1,5 +1,5 @@
-"use client";
-import { useState } from "react";
+// Server component - avoid client-only imports here so server-only libs (fs, path) can be used
+// Note: client components (forms, galleries) remain marked with "use client"
 import Hero from "@/components/Hero";
 import Slideshow from "@/components/Slideshow";
 // import Timeline from "@/components/Timeline";
@@ -8,8 +8,7 @@ import CondolenceList from "@/components/CondolenceList";
 import ImageGallery from "@/components/ImageGallery";
 
 export default function Home() {
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
-  const handleFormSubmit = () => setRefreshTrigger((prev) => prev + 1);
+  // server-rendered page; client subcomponents should call router.refresh() after mutations
 
   const events = [
     "Born in Lagos",
@@ -33,7 +32,7 @@ export default function Home() {
       {/* Form (left) and Slideshow (right on desktop only) */}
       <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-8 items-start">
         <div>
-          <CondolenceForm onSubmitSuccess={handleFormSubmit} />
+          <CondolenceForm />
         </div>
 
         {/* <div className="flex justify-center items-start"> */}
@@ -47,7 +46,7 @@ export default function Home() {
         <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center md:text-left">
           Messages & Testimonies
         </h2>
-        <CondolenceList refreshTrigger={refreshTrigger} />
+        <CondolenceList />
       </section>
 
       {/* Gallery section */}

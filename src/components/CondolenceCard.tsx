@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import { useState } from "react";
 import { useMediaQuery } from "./useMediaQuery";
@@ -11,8 +13,8 @@ interface CondolenceCardProps {
   timestamp?: string;
 }
 
-const TRUNCATE_LENGTH = 150; // Truncate messages longer than this
-const MODAL_THRESHOLD = 300; // Open in modal if message is longer than this
+const TRUNCATE_LENGTH = 150;
+const MODAL_THRESHOLD = 300;
 
 export default function CondolenceCard({
   name,

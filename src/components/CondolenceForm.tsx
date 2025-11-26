@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { mutate } from "swr";
 import { ToastContainer, toast } from "react-toastify";
@@ -7,12 +8,13 @@ import "react-toastify/dist/ReactToastify.css";
 import { slideInFromRight } from "@/lib/animations";
 
 interface CondolenceFormProps {
-  onSubmitSuccess: () => void;
+  onSubmitSuccess?: () => void;
 }
 
 export default function CondolenceForm({
   onSubmitSuccess,
 }: CondolenceFormProps) {
+  const router = useRouter();
   const [form, setForm] = useState({
     name: "",
     message: "",
@@ -62,7 +64,11 @@ export default function CondolenceForm({
       }
 
       // ✅ Immediately refresh cached condolences list (SWR)
-      mutate("/api/condolences");
+      try {
+        mutate("/api/condolences");
+      } catch (e) {
+        /* ignore if SWR not present */
+      }
 
       // Reset form
       setForm({
@@ -75,6 +81,13 @@ export default function CondolenceForm({
       });
 
       toast.success("Condolence submitted — thank you!");
+      // Refresh server components so the new condolence appears
+      try {
+        if (onSubmitSuccess) onSubmitSuccess();
+        router.refresh();
+      } catch (e) {
+        /* ignore */
+      }
     } catch (error) {
       console.error("Submission error:", error);
       const msg =
