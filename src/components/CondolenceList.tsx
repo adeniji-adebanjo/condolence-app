@@ -70,19 +70,69 @@ export default function CondolenceList({
   const startIdx = (page - 1) * perPage;
   const paged = condolences.slice(startIdx, startIdx + perPage);
 
+  const getPagination = () => {
+    const siblingCount = 1; // Number of pages to show on each side of the active page
+    const totalPageNumbers = siblingCount + 5; // 1 (active) + 2*siblingCount + 2 (first/last) + 2 (ellipses)
+
+    // Case 1: If the number of pages is less than the page numbers we want to show, return the full range.
+    if (totalPageNumbers >= totalPages) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+
+    const leftSiblingIndex = Math.max(page - siblingCount, 1);
+    const rightSiblingIndex = Math.min(page + siblingCount, totalPages);
+
+    // Determine if we need to show ellipses on the left or right side.
+    const shouldShowLeftDots = leftSiblingIndex > 2;
+    const shouldShowRightDots = rightSiblingIndex < totalPages - 1;
+
+    const firstPageIndex = 1;
+    const lastPageIndex = totalPages;
+
+    // Case 2: No left ellipsis, but right ellipsis is needed.
+    if (!shouldShowLeftDots && shouldShowRightDots) {
+      let leftItemCount = 3 + 2 * siblingCount;
+      let leftRange = Array.from({ length: leftItemCount }, (_, i) => i + 1);
+      return [...leftRange, "...", totalPages];
+    }
+
+    // Case 3: No right ellipsis, but left ellipsis is needed.
+    if (shouldShowLeftDots && !shouldShowRightDots) {
+      let rightItemCount = 3 + 2 * siblingCount;
+      let rightRange = Array.from(
+        { length: rightItemCount },
+        (_, i) => totalPages - rightItemCount + i + 1
+      );
+      return [firstPageIndex, "...", ...rightRange];
+    }
+
+    // Case 4: Both left and right ellipses are needed.
+    if (shouldShowLeftDots && shouldShowRightDots) {
+      let middleRange = Array.from(
+        { length: rightSiblingIndex - leftSiblingIndex + 1 },
+        (_, i) => leftSiblingIndex + i
+      );
+      return [firstPageIndex, "...", ...middleRange, "...", lastPageIndex];
+    }
+
+    // Default case (should not be reached with the logic above, but good for safety)
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
+  };
+
   return (
     <div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-6">
         {paged.map((c, index) => (
-          <CondolenceCard
-            key={startIdx + index}
-            name={c.name}
-            message={c.message}
-            imageUrl={c.imageUrl}
-            location={c.location}
-            relationship={c.relationship}
-            timestamp={c.timestamp}
-          />
+          <div key={startIdx + index} className="flex">
+            <CondolenceCard
+              name={c.name}
+              message={c.message}
+              imageUrl={c.imageUrl}
+              location={c.location}
+              relationship={c.relationship}
+              timestamp={c.timestamp}
+            />
+          </div>
         ))}
       </div>
 
@@ -98,17 +148,23 @@ export default function CondolenceList({
           </button>
 
           <div className="space-x-2">
-            {Array.from({ length: totalPages }).map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setPage(i + 1)}
-                className={`px-3 py-1 rounded cursor-pointer ${
-                  page === i + 1 ? "bg-blue-600 text-white" : "bg-gray-100"
-                }`}
-              >
-                {i + 1}
-              </button>
-            ))}
+            {getPagination().map((p, i) =>
+              typeof p === "number" ? (
+                <button
+                  key={i}
+                  onClick={() => setPage(p)}
+                  className={`px-3 py-1 rounded cursor-pointer ${
+                    page === p ? "bg-blue-600 text-white" : "bg-gray-100"
+                  }`}
+                >
+                  {p}
+                </button>
+              ) : (
+                <span key={i} className="px-3 py-1">
+                  {p}
+                </span>
+              )
+            )}
           </div>
 
           <button
