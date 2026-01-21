@@ -43,7 +43,7 @@ export default function Home() {
       </div>
 
       {/* Condolence list full width below */}
-      <section className="max-w-6xl mx-auto px-4 mt-12">
+      <section className="max-w-6xl mx-auto px-4 mt-12" id="testimonials">
         <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center md:text-left">
           Messages & Testimonies
         </h2>
