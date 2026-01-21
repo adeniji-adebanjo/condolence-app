@@ -3,7 +3,8 @@ import { JWT } from "google-auth-library";
 
 // Sheet configuration
 const SPREADSHEET_ID = process.env.GOOGLE_SPREADSHEET_ID;
-const SHEET_ID = process.env.GOOGLE_SHEET_ID;
+const SHEET_NAME = process.env.GOOGLE_SHEET_NAME || "condolence_entries";
+const IMAGE_SHEET_NAME = process.env.IMAGE_SHEET_NAME || "image_gallery";
 
 // Create JWT client
 const serviceAccountAuth = new JWT({
@@ -12,8 +13,21 @@ const serviceAccountAuth = new JWT({
   scopes: ["https://www.googleapis.com/auth/spreadsheets"],
 });
 
-// Initialize the sheet
-export const doc = new GoogleSpreadsheet(SPREADSHEET_ID!, serviceAccountAuth);
+// Helper to get initialized document
+let _doc: GoogleSpreadsheet | null = null;
+async function getDoc() {
+  if (_doc) return _doc;
+
+  const SPREADSHEET_ID = process.env.GOOGLE_SPREADSHEET_ID;
+  if (!SPREADSHEET_ID) {
+    throw new Error(
+      "GOOGLE_SPREADSHEET_ID is missing from environment variables.",
+    );
+  }
+
+  _doc = new GoogleSpreadsheet(SPREADSHEET_ID, serviceAccountAuth);
+  return _doc;
+}
 
 interface CondolenceData {
   name: string;
@@ -21,32 +35,39 @@ interface CondolenceData {
   imageUrl?: string;
   location?: string;
   relationship?: string;
+  otherRelationship?: string;
   timestamp?: string;
 }
 
 export async function getCondolences(): Promise<CondolenceData[]> {
   try {
     // Validate environment variables
-    if (!SPREADSHEET_ID) {
-      throw new Error("GOOGLE_SPREADSHEET_ID is not configured");
-    }
-    if (!SHEET_ID) {
-      throw new Error("GOOGLE_SHEET_ID is not configured");
-    }
-    if (!process.env.GOOGLE_CLIENT_EMAIL) {
-      throw new Error("GOOGLE_CLIENT_EMAIL is not configured");
-    }
-    if (!process.env.GOOGLE_PRIVATE_KEY) {
-      throw new Error("GOOGLE_PRIVATE_KEY is not configured");
+    const required = [
+      "GOOGLE_SPREADSHEET_ID",
+      "GOOGLE_SHEET_NAME",
+      "GOOGLE_CLIENT_EMAIL",
+      "GOOGLE_PRIVATE_KEY",
+    ];
+    const missing = required.filter((key) => !process.env[key]);
+
+    if (missing.length > 0) {
+      throw new Error(
+        `Google Sheets configuration is incomplete. Missing: ${missing.join(
+          ", ",
+        )}. Please add these to your .env.local file.`,
+      );
     }
 
     console.log("Loading spreadsheet info...");
+    const doc = await getDoc();
     await doc.loadInfo();
     console.log("Spreadsheet loaded:", doc.title);
 
-    const sheet = doc.sheetsById[Number(SHEET_ID)];
+    const sheet = doc.sheetsByTitle[SHEET_NAME];
     if (!sheet) {
-      throw new Error(`Sheet ID ${SHEET_ID} not found in spreadsheet`);
+      throw new Error(
+        `Sheet with name "${SHEET_NAME}" not found in spreadsheet`,
+      );
     }
     console.log("Found sheet:", sheet.title);
 
@@ -54,12 +75,13 @@ export async function getCondolences(): Promise<CondolenceData[]> {
     console.log(`Retrieved ${rows.length} rows from sheet`);
 
     return rows.map((row) => ({
-      name: row.get("name"),
-      message: row.get("message"),
-      imageUrl: row.get("imageUrl"),
-      location: row.get("location"),
-      relationship: row.get("relationship"),
-      timestamp: row.get("timestamp"),
+      name: row.get("name") || "",
+      message: row.get("message") || "",
+      imageUrl: row.get("imageUrl") || "",
+      location: row.get("location") || "",
+      relationship: row.get("relationship") || "",
+      otherRelationship: row.get("otherRelationship") || "",
+      timestamp: row.get("timestamp") || "",
     }));
   } catch (error) {
     console.error("Error fetching from Google Sheets:", error);
@@ -74,12 +96,15 @@ export async function getCondolences(): Promise<CondolenceData[]> {
 export async function addCondolence(data: CondolenceData): Promise<void> {
   try {
     console.log("Loading spreadsheet info for adding condolence...");
+    const doc = await getDoc();
     await doc.loadInfo();
     console.log("Spreadsheet accessed:", doc.title);
 
-    const sheet = doc.sheetsById[Number(SHEET_ID)];
+    const sheet = doc.sheetsByTitle[SHEET_NAME];
     if (!sheet) {
-      throw new Error(`Sheet ID ${SHEET_ID} not found in spreadsheet`);
+      throw new Error(
+        `Sheet with name "${SHEET_NAME}" not found in spreadsheet`,
+      );
     }
     console.log("Found sheet:", sheet.title);
 
@@ -88,12 +113,13 @@ export async function addCondolence(data: CondolenceData): Promise<void> {
     if (rows.length === 0) {
       console.log("Setting up headers...");
       await sheet.setHeaderRow([
+        "timestamp",
         "name",
         "message",
         "imageUrl",
         "location",
         "relationship",
-        "timestamp",
+        "otherRelationship",
       ]);
       console.log("Headers set successfully");
     }
@@ -124,7 +150,7 @@ interface ImageRow {
   uploadedAt?: string;
 }
 
-const IMAGE_SHEET_TITLE = "image_gallery";
+const IMAGE_SHEET_TITLE = process.env.IMAGE_SHEET_NAME || "image_gallery";
 
 export async function getImages(): Promise<ImageRow[]> {
   try {
@@ -135,11 +161,12 @@ export async function getImages(): Promise<ImageRow[]> {
     if (!process.env.GOOGLE_PRIVATE_KEY)
       throw new Error("GOOGLE_PRIVATE_KEY is not configured");
 
+    const doc = await getDoc();
     await doc.loadInfo();
     const sheet = doc.sheetsByTitle[IMAGE_SHEET_TITLE];
     if (!sheet) {
       console.warn(
-        `Sheet titled '${IMAGE_SHEET_TITLE}' not found. Returning empty array.`
+        `Sheet titled '${IMAGE_SHEET_TITLE}' not found. Returning empty array.`,
       );
       return [];
     }
@@ -158,6 +185,7 @@ export async function getImages(): Promise<ImageRow[]> {
 
 export async function addImage(data: ImageRow): Promise<void> {
   try {
+    const doc = await getDoc();
     await doc.loadInfo();
     let sheet = doc.sheetsByTitle[IMAGE_SHEET_TITLE];
     if (!sheet) {

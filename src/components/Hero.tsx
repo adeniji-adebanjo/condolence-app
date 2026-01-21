@@ -55,11 +55,7 @@ export default function Hero() {
         <p className="text-sm md:text-base mt-3">
           13th March 1951 – 29th October 2025 • Aged 74
         </p>
-        <p className="text-sm md:text-base italic mt-2">
-          “The Burial Date will be communicated.”
-        </p>
-
-        <div className="mt-4 flex gap-3 justify-center">
+        <div className="mt-4 flex flex-wrap gap-3 justify-center">
           <motion.button
             onClick={scrollToForm}
             whileHover={{ scale: 1.03 }}
@@ -68,6 +64,20 @@ export default function Hero() {
             aria-label="Jump to condolence form"
           >
             Share a Condolence
+          </motion.button>
+
+          <motion.button
+            onClick={() => {
+              const el = document.getElementById("burial-arrangements");
+              if (el)
+                el.scrollIntoView({ behavior: "smooth", block: "center" });
+            }}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            className="inline-flex items-center justify-center cursor-pointer gap-2 bg-amber-600 hover:bg-amber-700 text-white py-2 px-4 rounded-lg shadow-lg"
+            aria-label="View funeral arrangements"
+          >
+            Burial Arrangements
           </motion.button>
 
           <motion.button

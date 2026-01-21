@@ -3,6 +3,7 @@ import Slideshow from "@/components/Slideshow";
 import CondolenceForm from "@/components/CondolenceForm";
 import CondolenceList from "@/components/CondolenceList";
 import ImageGallery from "@/components/ImageGallery";
+import BurialArrangements from "@/components/BurialArrangements";
 // import Timeline from "@/components/Timeline";
 
 export default function Home() {
@@ -19,6 +20,8 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gray-50 pb-16">
       <Hero />
+
+      <BurialArrangements />
 
       <section className="text-center my-8 px-4">
         <p className="text-gray-600 max-w-2xl mx-auto text-lg">
