@@ -2,8 +2,24 @@
 import { motion } from "framer-motion";
 import { Calendar, Clock, MapPin, Info, ExternalLink } from "lucide-react";
 
+interface Event {
+  time: string;
+  title: string;
+  location: string;
+  mapUrl?: string;
+  note?: string;
+}
+
+interface ArrangementDay {
+  date: string;
+  colorLabel: string;
+  colors: string;
+  colorClass: string;
+  events: Event[];
+}
+
 export default function BurialArrangements() {
-  const arrangements = [
+  const arrangements: ArrangementDay[] = [
     {
       date: "Thursday 12th February, 2026",
       colorLabel: "Thursday Colours",
@@ -15,8 +31,7 @@ export default function BurialArrangements() {
           title: "Service of Songs / Wake Keep",
           location:
             "Bishops Smith Memorial Anglican Church, Agba Dam Estate Road, Ilorin, Kwara State.",
-          mapUrl:
-            "https://www.google.com/maps/place/Bishop+Smith+Anglican+Church/@8.4839814,4.5367803,17z/data=!3m1!4b1!4m6!3m5!1s0x10364c39c8c9a29d:0x22c2a07d3b2b8e3e!8m2!3d8.4839761!4d4.5393552!16s%2Fg%2F11b6j3w86c?entry=ttu",
+          mapUrl: "https://maps.app.goo.gl/7VoqNW5c8gHoeQA3A",
         },
       ],
     },
@@ -37,8 +52,7 @@ export default function BurialArrangements() {
           location:
             "Bishops Smith Memorial Anglican Church, Agba Dam Estate Road, Ilorin, Kwara State.",
           note: "Internment (Strictly private)",
-          mapUrl:
-            "https://www.google.com/maps/place/Bishop+Smith+Anglican+Church/@8.4839814,4.5367803,17z/data=!3m1!4b1!4m6!3m5!1s0x10364c39c8c9a29d:0x22c2a07d3b2b8e3e!8m2!3d8.4839761!4d4.5393552!16s%2Fg%2F11b6j3w86c?entry=ttu",
+          mapUrl: "https://maps.app.goo.gl/7VoqNW5c8gHoeQA3A",
         },
         {
           time: "12:00 PM",
@@ -85,7 +99,7 @@ export default function BurialArrangements() {
                 </div>
                 <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-full border border-gray-200 shadow-sm">
                   <div
-                    className={`w-4 h-4 rounded-full bg-gradient-to-r ${day.colorClass}`}
+                    className={`w-4 h-4 rounded-full bg-linear-to-r ${day.colorClass}`}
                   />
                   <span className="text-sm font-medium text-gray-600">
                     {day.colorLabel}:{" "}
@@ -113,9 +127,9 @@ export default function BurialArrangements() {
                           <h4 className="text-lg font-bold text-gray-900">
                             {event.title}
                           </h4>
-                          {(event as any).mapUrl && (
+                          {event.mapUrl && (
                             <a
-                              href={(event as any).mapUrl}
+                              href={event.mapUrl}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="inline-flex items-center gap-1 text-xs font-medium text-amber-700 hover:text-amber-800 bg-amber-100 px-2 py-1 rounded-md transition-colors"
@@ -126,7 +140,7 @@ export default function BurialArrangements() {
                           )}
                         </div>
                         <div className="flex items-start gap-2 text-gray-600">
-                          <MapPin size={18} className="mt-1 flex-shrink-0" />
+                          <MapPin size={18} className="mt-1 shrink-0" />
                           <p className="leading-relaxed">{event.location}</p>
                         </div>
                         {event.note && (

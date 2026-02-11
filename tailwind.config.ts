@@ -12,6 +12,9 @@ const config: Config = {
         heading: ["var(--font-playfair)", "serif"],
         sans: ["var(--font-lato)", "sans-serif"],
       },
+      screens: {
+        xs: "480px",
+      },
     },
   },
   plugins: [],
